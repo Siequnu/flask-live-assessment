@@ -1,6 +1,8 @@
 from app import db
 from datetime import datetime
 
+import app.classes.models
+
 
 class LiveAssessmentAssignment(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
@@ -60,3 +62,12 @@ class LiveAssessmentFeedback(db.Model):
 	def delete (self):
 		db.session.delete(self)
 		db.session.commit()
+
+
+def get_live_assessment_assignments_from_teacher_id (teacher_id):
+	live_assessments = []
+	for assessment in LiveAssessmentAssignment.query.all():
+		if app.classes.models.check_if_turma_id_belongs_to_a_teacher (assessment.turma_id, teacher_id) is True:
+			live_assessments.append (assessment)
+
+	return live_assessments

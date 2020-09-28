@@ -6,5 +6,6 @@ class LiveAssessmentCreationForm(FlaskForm):
 	title = StringField('Title:', validators=[DataRequired(), Length(max=250)])
 	description = StringField('Description:', validators=[DataRequired(), Length(max=500)])
 	peer_review_form_id = SelectField('Feedback form', coerce=int, validators=[DataRequired()])
+	target_turma = SelectField('For class:', coerce=int, validators=[DataRequired()])
 	create_live_assessment_form_submit = SubmitField('Create')
 
