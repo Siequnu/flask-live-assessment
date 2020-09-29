@@ -15,8 +15,10 @@ from datetime import datetime
 @login_required
 def live_assessment_index():
 	if app.models.is_admin(current_user.username):
-		live_assessments = app.live_assessment.get_live_assessment_assignments_from_teacher_id(current_user.id)
-		return render_template ('live_assessment_index.html')
+		live_assessments = app.live_assessment.models.get_live_assessment_assignments_from_teacher_id(current_user.id)
+		return render_template (
+			'live_assessment_index.html',
+			live_assessments = live_assessments)
 
 # Create new live assessment form
 @bp.route("/create", methods=['GET', 'POST'])

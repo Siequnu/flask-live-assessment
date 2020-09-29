@@ -3,6 +3,8 @@ from datetime import datetime
 
 import app.classes.models
 
+from app.models import Turma
+
 
 class LiveAssessmentAssignment(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
@@ -68,6 +70,8 @@ def get_live_assessment_assignments_from_teacher_id (teacher_id):
 	live_assessments = []
 	for assessment in LiveAssessmentAssignment.query.all():
 		if app.classes.models.check_if_turma_id_belongs_to_a_teacher (assessment.turma_id, teacher_id) is True:
-			live_assessments.append (assessment)
+			assessment_dict = assessment.__dict__
+			assessment_dict['turma'] = Turma.query.get(assessment.turma_id)
+			live_assessments.append (assessment_dict)
 
 	return live_assessments

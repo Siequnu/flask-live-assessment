@@ -10,8 +10,18 @@
 
   <a href="{{url_for('live-assessment.create_live_assessment')}}"><button class="btn btn-lg btn-outline-success mb-3"><i class="fa fa-plus-circle"></i> New live assessment</button></a>
   
-  <h5>Checking your essay for mistakes can take some time.</h5>
-  <h5>Please only click once.</h5>
+  {% for assessment in live_assessments %}
+  <div class="card" style="width: 18rem;">
+    <div class="card-header">
+      {{assessment.turma.turma_label}}
+    </div>
+    <div class="card-body">
+      <h5 class="card-title">{{assessment.title}}</h5>
+      <p class="card-text">{{assessment.description}}</p>
+      <a href="#" class="btn btn-info">Start</a>
+    </div>
+  </div>
+  {% endfor %}
 
 </div>
 {% endblock %}
