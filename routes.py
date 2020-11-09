@@ -52,7 +52,7 @@ def create_live_assessment():
 	if app.models.is_admin(current_user.username):
 		
 		form = LiveAssessmentCreationForm()
-		form.peer_review_form_id.choices = [(peer_review_form.id, peer_review_form.title) for peer_review_form in app.models.PeerReviewForm.query.all()]
+		form.peer_review_form_id.choices = [(peer_review_form.id, peer_review_form.title) for peer_review_form in AssessmentForm.query.all()]
 		form.target_turma.choices = [(turma.id, turma.turma_label) for turma in app.classes.models.get_teacher_classes_from_teacher_id (current_user.id)]
 		
 		if form.validate_on_submit():
@@ -78,15 +78,15 @@ def create_live_assessment():
 
 
 # The assessment form
-@bp.route("/<live_assessment_id>/", methods=['GET', 'POST'])
+@bp.route("/<int:live_assessment_id>/", methods=['GET', 'POST'])
 @login_required
 def submit_live_assessment(live_assessment_id):
 
 	live_assessment = LiveAssessmentAssignment.query.get(live_assessment_id)
 	if live_assessment is None: abort (404)
 
-	peer_review_form = app.models.PeerReviewForm.query.get(live_assessment.assessment_form_id)
-	if peer_review_form is None: abort (404)
+	assessment_form = AssessmentForm.query.get(live_assessment.assessment_form_id)
+	if assessment_form is None: abort (404)
 	
 	# Only students in this class or teachers managing this class can submit reviews
 	if app.classes.models.check_if_student_is_in_class (current_user.id, live_assessment.turma_id) is True or current_user.is_admin is True:
@@ -96,7 +96,7 @@ def submit_live_assessment(live_assessment_id):
 			if app.classes.models.check_if_turma_id_belongs_to_a_teacher (live_assessment.turma_id, current_user.id) is False: 
 				abort (403)
 		
-		form_data = app.models.PeerReviewForm.query.get(live_assessment.assessment_form_id).serialised_form_data
+		form_data = AssessmentForm.query.get(live_assessment.assessment_form_id).serialised_form_data
 		form_loader = app.assignments.formbuilder.formLoader(
 			form_data, 
 			(url_for('live-assessment.submit_live_assessment', live_assessment_id=live_assessment_id)))
@@ -134,7 +134,7 @@ def view_assessment_submissions(live_assessment_id):
 
 
 # View a assessment submission
-@bp.route("/view/submission/<submission_id>")
+@bp.route("/view/submission/<int:submission_id>")
 @login_required
 def view_completed_submission(submission_id):
 	live_assessment_feedback = LiveAssessmentFeedback.query.get(submission_id)
@@ -146,13 +146,13 @@ def view_completed_submission(submission_id):
 	if app.models.is_admin(current_user.username) or current_user.id == live_assessment_feedback.student_id:
 		
 		# Get the peer review form ID
-		peer_review_form_id = live_assessment.assessment_form_id
+		assessment_form_id = live_assessment.assessment_form_id
 		
 		# JSON load the form contents
 		form_contents = json.loads(live_assessment_feedback.comment)
 
 		# Load the form (fields)
-		form_data = AssessmentForm.query.get(peer_review_form_id).serialised_form_data
+		form_data = AssessmentForm.query.get(assessment_form_id).serialised_form_data
 
 		# Populate the form fields with the serialised data
 		form_loader = app.assignments.formbuilder.formLoader(

@@ -43,7 +43,7 @@
   {% if live_assessments|length == 0 %}
   <div class="jumbotron">
     <h1 class="display-4 text-center">Introducing live assessment!</h1>
-    <p class="lead text-center">Live examination, directly on WorkUp.
+    <p class="lead text-center">Live examination, directly on {{config['APP_NAME']}}.
     </p>
     <hr class="my-4 text-center">
     <p>You can give your class custom online examinations, using the live assessments feature.</p>
@@ -80,7 +80,7 @@
 {% if live_assessments|length == 0 %}
 <div class="jumbotron">
   <h1 class="display-4 text-center">Introducing live assessment!</h1>
-  <p class="lead text-center">Live examination, directly on WorkUp.
+  <p class="lead text-center">Live examination, directly on {{config['APP_NAME']}}.
   </p>
   <hr class="my-4 text-center">
   <p>You currently do not have any online tests that you can do.</p>

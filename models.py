@@ -16,7 +16,7 @@ class LiveAssessmentAssignment(db.Model):
 	user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 	turma_id = db.Column(db.Integer, db.ForeignKey('turma.id'))
 	is_open = db.Column(db.Boolean, default=False)
-	assessment_form_id = db.Column(db.Integer, db.ForeignKey('peer_review_form.id'))
+	assessment_form_id = db.Column(db.Integer, db.ForeignKey('assessment_form.id'))
 	
 	def __repr__(self):
 		return '<Live Assessment Assignment {}>'.format(self.id)
