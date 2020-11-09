@@ -1,27 +1,90 @@
-{% extends "header.html" %} {% block app_content %}
+{% extends "header.html" %}
+{% block app_content %}
+{% from 'bootstrap/form.html' import render_field %}
 
 <div class="container">
   <div class="row">
     <div class="col-12">
-      <h1><i class="fa fa-thumbs-up"></i> Live assessment</h1>
+      <h1><i class="fa fa-tasks"></i> Live assessment</h1>
     </div>
   </div>
   <hr>
 
-  <a href="{{url_for('live-assessment.create_live_assessment')}}"><button class="btn btn-lg btn-outline-success mb-3"><i class="fa fa-plus-circle"></i> New live assessment</button></a>
-  
+  {% if current_user.is_admin %}
+
+  <!-- New assignment creation modal -->
+  <div class="modal fade" id="createNewLiveAssessmentModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-body">
+          <h1 class="display-5"><i class="fa fa-tasks"></i> New live assessment</h1>
+          <hr class="my-4">
+
+          <form method="post" action="{{url_for('live-assessment.create_live_assessment')}}"
+            enctype="multipart/form-data">
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+            {{ render_field(form.title) }}
+            {{ render_field(form.description) }}
+            {{ render_field(form.peer_review_form_id) }}
+            {{ render_field(form.target_turma) }}
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          {{ render_field(form.create_live_assessment_form_submit, button_style="success") }}
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <a href="#"><button class="btn btn-outline-success mb-3" data-toggle="modal"
+      data-target="#createNewLiveAssessmentModal"><i class="fa fa-plus-circle"></i> New live assessment</button></a>
+
   {% for assessment in live_assessments %}
-  <div class="card" style="width: 18rem;">
+  <div class="card mb-2" style="width: 18rem;">
     <div class="card-header">
       {{assessment.turma.turma_label}}
     </div>
     <div class="card-body">
       <h5 class="card-title">{{assessment.title}}</h5>
       <p class="card-text">{{assessment.description}}</p>
-      <a href="#" class="btn btn-info">Start</a>
+      {% if assessment.is_open %}
+      <a href="{{url_for('live-assessment.toggle_live_assessment_status', live_assessment_id = assessment.id)}}"
+        class="btn btn-info">End</a>
+      {% else %}
+      <a href="{{url_for('live-assessment.toggle_live_assessment_status', live_assessment_id = assessment.id)}}"
+        class="btn btn-success">Start</a>
+      {% endif %}
+      <a href="{{url_for('live-assessment.view_assessment_submissions', live_assessment_id = assessment.id)}}"
+        class="btn btn-outline-primary">View submissions</a>
     </div>
   </div>
   {% endfor %}
 
 </div>
+
+<!-- Student view-->
+{% else %}
+{% for assessment in live_assessments %}
+<div class="card mb-2" style="width: 18rem;">
+  <div class="card-header">
+    {{assessment.turma.turma_label}}
+  </div>
+  <div class="card-body">
+    <h5 class="card-title">{{assessment.title}}</h5>
+    <p class="card-text">{{assessment.description}}</p>
+
+    {% if assessment.completed != [] %}
+    <a href="{{url_for('live-assessment.submit_live_assessment', live_assessment_id = assessment.id)}}"
+    class="btn btn-info">View submission</a>
+    {% else %}
+    <a href="{{url_for('live-assessment.submit_live_assessment', live_assessment_id = assessment.id)}}"
+      class="btn btn-info">Start</a>
+
+    {% endif %}
+  </div>
+</div>
+{% endfor %}
+
+{% endif %}
 {% endblock %}
