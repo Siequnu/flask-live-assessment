@@ -27,7 +27,7 @@ def live_assessment_index():
 			form = form,
 			live_assessments = live_assessments)
 	else:
-		live_assessments = app.live_assessment.models.get_student_live_asessments(current_user.id)
+		live_assessments = app.live_assessment.models.get_student_live_assessments(current_user.id)
 		return render_template (
 			'live_assessment_index.html',
 			live_assessments = live_assessments)
@@ -112,7 +112,7 @@ def submit_live_assessment(live_assessment_id):
 			)
 			new_comment.add ()
 
-			flash('Your assignment was submitted succesfully!', 'success')
+			flash('Your test was submitted succesfully!', 'success')
 			return redirect(url_for('live-assessment.live_assessment_index', live_assessment_id = live_assessment_id))
 		
 		return render_template('live_assessment_form.html', title='Live assessment', render_form=render_form)
@@ -136,14 +136,13 @@ def view_assessment_submissions(live_assessment_id):
 @bp.route("/view/submission/<submission_id>")
 @login_required
 def view_completed_submission(submission_id):
-	# !FIXME needs better checks
-	if app.models.is_admin(current_user.username):
-	
-		live_assessment_feedback = LiveAssessmentFeedback.query.get(submission_id)
-		if live_assessment_feedback is None: abort (404)
+	live_assessment_feedback = LiveAssessmentFeedback.query.get(submission_id)
+	if live_assessment_feedback is None: abort (404)
 
-		live_assessment = LiveAssessmentAssignment.query.get(live_assessment_feedback.live_assessment_assignment_id)
-		if live_assessment is None: abort (404)
+	live_assessment = LiveAssessmentAssignment.query.get(live_assessment_feedback.live_assessment_assignment_id)
+	if live_assessment is None: abort (404)
+	
+	if app.models.is_admin(current_user.username) or current_user.id == live_assessment_feedback.student_id:
 		
 		# Get the peer review form ID
 		peer_review_form_id = live_assessment.assessment_form_id

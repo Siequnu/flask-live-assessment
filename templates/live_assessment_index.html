@@ -39,6 +39,16 @@
 
   <a href="#"><button class="btn btn-outline-success mb-3" data-toggle="modal"
       data-target="#createNewLiveAssessmentModal"><i class="fa fa-plus-circle"></i> New live assessment</button></a>
+  {% if live_assessments|length == 0 %}
+  <div class="jumbotron">
+    <h1 class="display-4 text-center">Introducing live assessment!</h1>
+    <p class="lead text-center">Live examination, directly on WorkUp.
+    </p>
+    <hr class="my-4 text-center">
+    <p>You can give your class custom online examinations, using the live assessments feature.</p>
+    <p>Simply design a test using the form builder, and you can immediately roll it out as a live examination.</p>
+  </div>
+  {% endif %}
 
   {% for assessment in live_assessments %}
   <div class="card mb-2" style="width: 18rem;">
@@ -65,6 +75,16 @@
 
 <!-- Student view-->
 {% else %}
+
+{% if live_assessments|length == 0 %}
+<div class="jumbotron">
+  <h1 class="display-4 text-center">Introducing live assessment!</h1>
+  <p class="lead text-center">Live examination, directly on WorkUp.
+  </p>
+  <hr class="my-4 text-center">
+  <p>You currently do not have any online tests that you can do.</p>
+</div>
+{% else %}
 {% for assessment in live_assessments %}
 <div class="card mb-2" style="width: 18rem;">
   <div class="card-header">
@@ -73,18 +93,23 @@
   <div class="card-body">
     <h5 class="card-title">{{assessment.title}}</h5>
     <p class="card-text">{{assessment.description}}</p>
-
-    {% if assessment.completed != [] %}
-    <a href="{{url_for('live-assessment.submit_live_assessment', live_assessment_id = assessment.id)}}"
-    class="btn btn-info">Go to assessment</a>
+  </div>
+  <div class="card-footer">
+    {% if assessment.completed != none %}
+    <a href="{{url_for('live-assessment.view_completed_submission', submission_id = assessment.completed.id)}}"
+      class="btn btn-outline-info">View your test</a>
     {% else %}
+    {% if assessment.is_open == True %}
     <a href="{{url_for('live-assessment.submit_live_assessment', live_assessment_id = assessment.id)}}"
-      class="btn btn-info">Start</a>
-
+      class="btn btn-outline-success">Start your test</a>
+    {% else %}
+    <p>This assessment is not open yet.</p>
+    {% endif %}
     {% endif %}
   </div>
 </div>
 {% endfor %}
+{% endif %}
 
 {% endif %}
 {% endblock %}

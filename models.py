@@ -86,14 +86,16 @@ def get_live_assessment_assignments_from_teacher_id (teacher_id):
 
 	return live_assessments
 
-def get_student_live_asessments (student_id):
+def get_student_live_assessments (student_id):
 	live_assessments = []
 	user_enrollment = get_user_enrollment_from_id (student_id)
 	for enrollment, user, turma in user_enrollment:
-		for assessment in LiveAssessmentAssignment.query.filter_by (turma_id = turma.id).filter_by (is_open = True).all():
+		# Get all the open assessments
+		for assessment in LiveAssessmentAssignment.query.filter_by (turma_id = turma.id).all():
 			assessment_dict = assessment.__dict__
 			assessment_dict['turma'] = Turma.query.get(assessment.turma_id)
 			assessment_dict['completed'] = LiveAssessmentFeedback.query.filter_by(live_assessment_assignment_id = assessment.id).filter_by (student_id = current_user.id).first()
+			print (assessment_dict['completed'])
 			live_assessments.append (assessment_dict)
 
 	return live_assessments
