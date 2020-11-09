@@ -76,7 +76,7 @@
 
     {% if assessment.completed != [] %}
     <a href="{{url_for('live-assessment.submit_live_assessment', live_assessment_id = assessment.id)}}"
-    class="btn btn-info">View submission</a>
+    class="btn btn-info">Go to assessment</a>
     {% else %}
     <a href="{{url_for('live-assessment.submit_live_assessment', live_assessment_id = assessment.id)}}"
       class="btn btn-info">Start</a>
