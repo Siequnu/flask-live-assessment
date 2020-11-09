@@ -1,0 +1,48 @@
+{% extends "header.html" %} {% from 'bootstrap/form.html' import render_form %} {% block app_content %}
+<link rel="stylesheet" href="/static/pyformbuild/src/css/style.css">
+
+<style>
+    @media (prefers-color-scheme: dark) {
+        input {background-color: #222222 !important; border: 1px solid white;}
+        .right-col #sortable-elements .form-element.selected {background-color: #9b9a9a}
+    }
+</style>
+
+<div class="container"><div class="row">
+
+    <div class="col-md-12">
+        <h1><i class="fa fa-comment mr-3"></i>Build assessment form</h1>
+        <hr>
+        <a href="{{url_for('live-assessment.assessment_form_admin')}}"><button class="btn btn-secondary"><i
+                class="fa fa-chevron-left"></i> Back</button></a>
+    </div>
+</div>
+
+<div style="margin-top: 20px">
+    <!-- Placeholder for the formbuilder JS to populate-->
+    <div id="formBuilder"></div>
+</div>
+
+<script type="text/javascript" src="/static/js/lib/jquery-2.1.1.min.js"></script>
+<script type="text/javascript" src="/static/js/lib/jquery-ui.1.11.1.min.js"></script>
+<script type="text/javascript" src="/static/pyformbuild/src/libraries/dust-js/dust-core-0.3.0.min.js"></script>
+<script type="text/javascript" src="/static/pyformbuild/src/libraries/dust-js/dust-full-0.3.0.min.js"></script>
+<script type="text/javascript" src="/static/pyformbuild/src/libraries/dust-js/dust-helpers.js"></script>
+<script type="text/javascript" src="/static/pyformbuild/src/libraries/tabs.jquery.js"></script>
+<script type="text/javascript" src="/static/pyformbuild/src/formBuilder.jquery.js"></script>
+
+<script type="text/javascript">
+    $('#formBuilder').formBuilder({
+
+        load_url: '/static/pyformbuild/src/json/example_assessment.json',
+        save_url: '{{ url_for ('live-assessment.save_new_assessment_form') }}',
+
+        onSaveForm: function () {
+            // redirect to demo page
+            window.location.href = '{{ url_for('live-assessment.render_assessment_form') }}';
+        }
+
+    });
+</script>
+
+{% endblock %}

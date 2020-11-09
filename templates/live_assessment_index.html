@@ -39,6 +39,7 @@
 
   <a href="#"><button class="btn btn-outline-success mb-3" data-toggle="modal"
       data-target="#createNewLiveAssessmentModal"><i class="fa fa-plus-circle"></i> New live assessment</button></a>
+    <a href="{{url_for('live-assessment.assessment_form_admin')}}"><button class="btn btn-outline-primary mb-3"><i class="fa fa-tasks"></i> Manage assessment forms</button></a>
   {% if live_assessments|length == 0 %}
   <div class="jumbotron">
     <h1 class="display-4 text-center">Introducing live assessment!</h1>

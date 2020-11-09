@@ -76,6 +76,19 @@ class LiveAssessmentFeedback(db.Model):
 		db.session.commit()
 
 
+class AssessmentForm(db.Model):
+	__table_args__ = {'sqlite_autoincrement': True}
+	id = db.Column(db.Integer, primary_key=True)
+	title = db.Column(db.String(140))
+	description = db.Column(db.String(280))
+	serialised_form_data = db.Column(db.String(20000))
+	created_by_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+	timestamp = db.Column(db.DateTime, index=True, default=datetime.now())
+	
+	def __repr__(self):
+		return '<Assessment form {}>'.format(self.title)
+
+
 def get_live_assessment_assignments_from_teacher_id (teacher_id):
 	live_assessments = []
 	for assessment in LiveAssessmentAssignment.query.all():
