@@ -61,6 +61,7 @@ class LiveAssessmentFeedback(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
 	live_assessment_assignment_id = db.Column(db.Integer, db.ForeignKey('live_assessment_assignment.id'))
 	comment = db.Column(db.String(20000))
+	grade = db.Column(db.Float)
 	timestamp = db.Column(db.DateTime, index=True, default=datetime.now())
 	student_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 

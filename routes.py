@@ -88,7 +88,7 @@ def submit_live_assessment(live_assessment_id):
 	assessment_form = AssessmentForm.query.get(live_assessment.assessment_form_id)
 	if assessment_form is None: abort (404)
 	
-	# Only students in this class or teachers managing this class can submit reviews
+	# Only students in this class or teachers managing this class can submit assessment
 	if app.classes.models.check_if_student_is_in_class (current_user.id, live_assessment.turma_id) is True or current_user.is_admin is True:
 		
 		# Security check for teacher
@@ -180,6 +180,29 @@ def view_completed_submission(submission_id):
 			form_action = form_action)
 		
 	else: abort (403)
+
+
+# Display a summary page showing the quiz assessment
+@bp.route('/feedback/summary/<int:live_assessment_id>')
+@login_required
+def view_assessment_summary (live_assessment_id):
+	# Admin only view
+	if current_user.is_admin is False: abort (403)
+		
+	# Get the assessment object
+	assessment = LiveAssessmentAssignment.query.get(live_assessment_id)
+	if assessment is None: abort (404)
+
+	# Security check
+	if app.classes.models.check_if_turma_id_belongs_to_a_teacher (assessment.target_turma, current_user.id) is False: 
+				abort (403)
+
+	# Get the summary of the feedback
+	summary = app.assignments.models.get_feedback_summary (upload_id)
+	return render_template (
+		'view_feedback_summary.html',
+		upload = upload,
+		summary = summary)
 
 
 # Admin page to manage assessment forms

@@ -3,8 +3,18 @@
 <div class="container">
     <div class="row">
         <div class="col-12">
-            <h1><i class="fa fa-tasks mr-2"></i>View live assessment submissions</h1>
+            <h1><i class="fa fa-tasks mr-2"></i>Live assessment submissions</h1>
             <hr>
+        </div>
+    </div>
+
+    <div class="card mb-2">
+        <div class="card-body">
+            <h3>{{info_array.assessment_object.title}}</h3>
+            <h5>{{info_array.assessment_object.description}}</h5>
+        </div>
+        <div class="card-footer">
+            <a href="{{url_for('live-assessment.view_assessment_summary', live_assessment_id = info_array.assessment_object.id)}}"><button class="btn btn-outline-info"><i class="fa fa-star-half-alt mr-2"></i>View grade analysis</button></a>
         </div>
     </div>
 
